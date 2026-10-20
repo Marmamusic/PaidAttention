@@ -146,6 +146,18 @@
         </p>
       </details>
     </div>
+
+    <!-- Option 3: 1-Click WordPress Plugin Download -->
+    <div class="card method-card">
+      <div class="card-top">
+        <strong>3. Using WordPress?</strong>
+        <span class="pill-emerald">Zero Code Required</span>
+      </div>
+      <p class="setting-desc" style="margin-bottom:6px;">
+        Download a ready-to-install WordPress plugin pre-configured with your site and wallet above.
+      </p>
+      <button id="downloadWpPluginBtn" class="btn-secondary btn-full">📥 Download WordPress Plugin (.php)</button>
+    </div>
   </section>
 
   <!-- ===================================================================== -->
@@ -201,6 +213,19 @@
         </div>
         <button id="toggleQualityPoolBtn" class="toggle-btn active">ON</button>
       </div>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <strong>⛓️ Base Sepolia Testnet Contracts</strong>
+        <span class="pill-cyan">Chain ID: 84532</span>
+      </div>
+      <p class="setting-desc" style="margin-bottom:6px;">
+        Paste your deployed Base Sepolia contract addresses (see <code>contracts/DEPLOY_REMIX_GUIDE.md</code>):
+      </p>
+      <input type="text" id="vaultContractInput" class="text-input mono" placeholder="ImmutableUserVault (0x...)" value="0xBaseSepoliaVault...200Cap" />
+      <input type="text" id="protocolContractInput" class="text-input mono" placeholder="OpenStreamProtocol (0x...)" value="0xBaseSepoliaProtocol...v200" />
+      <button id="saveTestnetContractsBtn" class="btn-emerald btn-full">💾 Save Testnet Addresses</button>
     </div>
   </section>
 

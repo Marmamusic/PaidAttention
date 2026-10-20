@@ -168,4 +168,40 @@ document.getElementById('claimPasskeyBtn').addEventListener('click', () => {
   statusEl.textContent = `✅ Verified ${currentDomain}! Choose Passkey Wallet (instant) or Bank IBAN (1-2 days).`;
 });
 
+const wpBtn = document.getElementById('downloadWpPluginBtn');
+if (wpBtn) {
+  wpBtn.addEventListener('click', () => {
+    const walletAddr = (document.getElementById('creatorWalletInput').value || '').trim();
+    const phpCode = `<?php
+/**
+ * Plugin Name: PaidAttention — Pay Attention Online (${currentDomain})
+ * Description: Automatically adds your PaidAttention micropayment tag to WordPress <head>.
+ * Version: 2.0.0
+ * License: MIT
+ */
+if (!defined('ABSPATH')) exit;
+add_action('wp_head', function() {
+  echo '<meta name="paidattention" content="${walletAddr && walletAddr !== '0x71C4...89A2' ? 'wallet:' + walletAddr : 'domain:' + currentDomain}" data-t-grace="15" data-p-cap="0.015" />' . "\\n";
+}, 1);
+`;
+    const blob = new Blob([phpCode], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'paidattention-wordpress.php';
+    a.click();
+    URL.revokeObjectURL(url);
+    wpBtn.textContent = '✅ Downloaded paidattention-wordpress.php!';
+    setTimeout(() => { wpBtn.textContent = '📥 Download WordPress Plugin (.php)'; }, 2000);
+  });
+}
+
+const saveTestnetBtn = document.getElementById('saveTestnetContractsBtn');
+if (saveTestnetBtn) {
+  saveTestnetBtn.addEventListener('click', () => {
+    saveTestnetBtn.textContent = '✅ Saved Base Sepolia Contracts!';
+    setTimeout(() => { saveTestnetBtn.textContent = '💾 Save Testnet Addresses'; }, 1800);
+  });
+}
+
 initPopup();

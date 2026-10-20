@@ -1487,8 +1487,37 @@ document.getElementById('copySnippetBtn').addEventListener('click', () => {
   navigator.clipboard.writeText(document.getElementById('generatedCodePre').textContent);
   const btn = document.getElementById('copySnippetBtn');
   btn.textContent = '✅ Copied!';
-  setTimeout(() => { btn.textContent = '📋 Copy Snippet'; }, 1800);
+  setTimeout(() => { btn.textContent = '📋 Copy Code'; }, 1800);
 });
+
+const webWpBtn = document.getElementById('downloadWebWpPluginBtn');
+if (webWpBtn) {
+  webWpBtn.addEventListener('click', () => {
+    const cfg = getStudioConfig();
+    const domainVal = (document.getElementById('creatorDomainInput').value || 'aliceblog.com').trim();
+    const phpCode = `<?php
+/**
+ * Plugin Name: PaidAttention — Pay Attention Online (${domainVal})
+ * Description: Automatically adds your PaidAttention micropayment tag to WordPress <head>.
+ * Version: 2.0.0
+ * License: MIT
+ */
+if (!defined('ABSPATH')) exit;
+add_action('wp_head', function() {
+  echo '<meta name="paidattention" content="domain:${domainVal}" data-category="${cfg.category}" data-t-grace="${cfg.tGrace}" data-t-cap="${cfg.tCap}" data-p-cap="${cfg.pInit.toFixed(3)}" />' . "\\n";
+}, 1);
+`;
+    const blob = new Blob([phpCode], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'paidattention-wordpress.php';
+    a.click();
+    URL.revokeObjectURL(url);
+    webWpBtn.textContent = '✅ Downloaded Plugin!';
+    setTimeout(() => { webWpBtn.textContent = '📥 Download WordPress Plugin (.php)'; }, 2000);
+  });
+}
 
 document.getElementById('publishToCatalogBtn').addEventListener('click', () => {
   const cfg = getStudioConfig();
