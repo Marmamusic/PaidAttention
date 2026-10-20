@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "PaidAttention — Pay Attention Online",
+  "version": "2.0.0",
+  "description": "Pay attention online. Fair micropayments for genuine focus (never clickbait), with a $2.00 Free Trial and 60s creator setup.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "PaidAttention — Pay attention online",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-script.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

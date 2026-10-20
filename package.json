@@ -1,0 +1,31 @@
+{
+  "name": "paidattention",
+  "version": "2.0.0",
+  "description": "PaidAttention — Pay attention online. Open-source micropayment protocol & browser extension with anti-clickbait 15s countdown, smart quality rebalancing, and 60s creator setup.",
+  "main": "sdk/openstream-sdk.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Marmamusic/PaidAttention.git"
+  },
+  "homepage": "https://github.com/Marmamusic/PaidAttention#readme",
+  "bugs": {
+    "url": "https://github.com/Marmamusic/PaidAttention/issues"
+  },
+  "author": "Marmamusic (https://github.com/Marmamusic)",
+  "scripts": {
+    "start": "npx --yes serve . -l 3000",
+    "demo": "npx --yes serve . -l 3000",
+    "deploy:testnet": "npx hardhat run scripts/deploy-testnet.js --network baseSepolia"
+  },
+  "keywords": [
+    "paidattention",
+    "micropayments",
+    "http-402",
+    "x402",
+    "ethereum-l2",
+    "base-sepolia",
+    "web-monetization",
+    "attention-economy"
+  ],
+  "license": "MIT"
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Daily Ledger — OpenStream 3-Line Embed Example</title>
+  <!-- 1. Include the OpenStream Web Component SDK -->
+  <script src="../sdk/openstream-sdk.js"></script>
+  <style>
+    body {
+      background: #090d16;
+      color: #e5e7eb;
+      font-family: Georgia, serif;
+      max-width: 760px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    header {
+      border-bottom: 1px solid #2a364f;
+      padding-bottom: 14px;
+      margin-bottom: 24px;
+      font-family: system-ui, sans-serif;
+    }
+    h1 { font-size: 28px; margin-bottom: 8px; color: #fff; }
+    p { font-size: 17px; margin-bottom: 16px; color: #d1d5db; }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>📰 THE DAILY LEDGER — Publisher Integration Demo</h2>
+    <p style="font-size: 13px; color: #9ca3af;">
+      This page embeds OpenStream using a single <code>&lt;openstream-gate&gt;</code> HTML tag. Switch tabs to see the focus meter pause automatically!
+    </p>
+  </header>
+
+  <!-- 2. Wrap any article, video player, audio stream, or AI tool -->
+  <openstream-gate
+    content-id="0x9a1f...e401"
+    category="ARTICLE"
+    creator="0x71C4...89A2"
+    p-init="0.080"
+    p-floor="0.005"
+    t-grace="8"
+    t-cap="45"
+    epoch-reset-hours="36"
+    dev-pledge-bps="100">
+
+    <article>
+      <h1>Why Micro-Attention Curves Replace Monthly Subscriptions</h1>
+      <p>
+        During the first <strong>8 seconds</strong> (the anti-clickbait grace period), your cost is strictly <strong>$0.0000</strong>. If this headline were clickbait and you closed the tab right now, the publisher would earn zero.
+      </p>
+      <p>
+        As you continue reading with this window focused, the OpenStream S-Curve smoothly streams fractions of a cent from the Pooled L2 Vault. Once you reach <strong>45 seconds</strong>, the meter hits the <strong>$0.080 cap</strong> and drops to <strong>$0.0000/sec</strong> for the next 36 hours!
+      </p>
+      <p>
+        Notice the green badge in the top bar: an optional <strong>+1% Wikipedia-style Open-Source Development Pledge</strong> ($0.0008 on this article) is routed to the protocol maintainers until your chosen expiration date (1 week, 1 month, or 1 year).
+      </p>
+    </article>
+
+  </openstream-gate>
+</body>
+</html>

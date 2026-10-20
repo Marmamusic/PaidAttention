@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PaidAttention v2.0 — Pay Attention Online</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- TOP PROTOCOL HUD & ELECTRIC UTILITY METER -->
+  <header class="top-hud">
+    <div class="brand">
+      <div class="brand-logo">⚡</div>
+      <div>
+        <h1>PaidAttention <span class="badge-version">v2.0</span></h1>
+        <p class="brand-sub">Pay attention online</p>
+      </div>
+    </div>
+
+    <!-- 4-Way Workspace Navigation Tabs -->
+    <div class="mode-tabs" role="tablist">
+      <button id="modeTabConsumer" class="mode-tab active" data-mode="consumer">
+        🎧 Browse &amp; Watch
+      </button>
+      <button id="modeTabPublisher" class="mode-tab" data-mode="publisher">
+        🚀 Monetize Your Site
+      </button>
+      <button id="modeTabAnalytics" class="mode-tab" data-mode="analytics">
+        📊 My History &amp; Top Content
+      </button>
+      <button id="modeTabDao" class="mode-tab" data-mode="dao">
+        🔒 Wallet Safety &amp; Grants
+      </button>
+    </div>
+
+    <!-- Simple Live Rate Counter + Focus Toggle -->
+    <div class="focus-controls">
+      <div class="electric-meter-box" title="Current live payment rate">
+        <span class="meter-label">⚡ LIVE RATE</span>
+        <div class="odometer-digits mono" id="electricMeterDisplay">$0.00000 /s</div>
+      </div>
+      <div id="focusStatusBadge" class="focus-badge focused">
+        <span class="pulse-dot"></span>
+        <span id="focusStatusText">ACTIVE</span>
+      </div>
+      <button id="toggleFocusSimBtn" class="btn-secondary btn-sm" title="Pause or resume attention">
+        ⏸️ Pause
+      </button>
+    </div>
+
+    <!-- Clean Jargon-Free Wallet HUD -->
+    <div class="wallet-hud">
+      <div class="hud-metric">
+        <span class="hud-label" id="walletHudLabel">Wallet</span>
+        <div class="hud-row-inline">
+          <span class="hud-value mono" id="userBalanceDisplay">$24.50</span>
+          <button id="topUpBtn" class="btn-xs btn-outline">+ Add $10</button>
+          <button id="connectMetaMaskBtn" class="btn-xs btn-primary" title="Connect MetaMask on Base Sepolia Testnet">🦊 Connect</button>
+        </div>
+        <button id="headerWalletInfoBtn" class="clean-link-btn" style="text-align:left;">ℹ️ Instant refund &amp; safety</button>
+        <span class="hud-sub mono hidden" id="fifoTrancheSub"></span>
+      </div>
+
+      <div class="hud-metric trial-box">
+        <span class="hud-label">🎁 Free Trial Credit</span>
+        <div class="hud-row-inline">
+          <span class="hud-value mono text-amber" id="trialBalanceDisplay">$1.42 <small>LEFT</small></span>
+          <button id="finishTrialPopupBtn" class="btn-xs btn-outline">Summary</button>
+        </div>
+        <span class="hud-sub mono" id="organicUsersSub">Promo trial active</span>
+      </div>
+
+      <div class="hud-metric">
+        <span class="hud-label">Spending Limits ($3/day)</span>
+        <div class="cap-bar-wrap">
+          <div class="cap-bar-fill" id="dailyCapBar" style="width: 14%"></div>
+        </div>
+        <span class="hud-sub mono" id="dailyCapText">$0.42 / $3.00 today</span>
+      </div>
+
+      <div class="hud-metric yield-box hidden">
+        <span class="hud-label">Zero Gas Pool</span>
+        <span class="hud-value mono text-emerald" id="yieldReserveDisplay">$18.420910</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- OPTIONAL 1% OPEN-SOURCE DEVELOPMENT TIP BAR -->
+  <div class="dev-pledge-bar">
+    <div class="pledge-left">
+      <span class="pledge-heart">💚</span>
+      <div>
+        <strong>Support Open-Source Development (+1% Optional Tip):</strong>
+        <span class="pledge-sub">
+          Automatically expires whenever you choose.
+        </span>
+      </div>
+    </div>
+    <div class="pledge-controls">
+      <div class="pledge-pills" id="pledgeDurationGroup">
+        <button class="pledge-pill" data-duration="off">Off (0%)</button>
+        <button class="pledge-pill" data-duration="1w">1 Week</button>
+        <button class="pledge-pill active" data-duration="1m">1 Month</button>
+        <button class="pledge-pill" data-duration="1y">1 Year</button>
+      </div>
+      <div class="pledge-stats mono">
+        <span id="pledgeStatusLabel" class="text-emerald">ACTIVE (30d)</span>
+        <span class="hidden">Treasury: <strong id="devTreasuryDisplay">$0.014200</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- VIEW 1: CLEAN BROWSE & WATCH WORKSPACE                                  -->
+  <!-- ======================================================================= -->
+  <main id="consumerWorkspace" class="workspace-grid">
+    <!-- LEFT COLUMN: CONTENT LIST -->
+    <section class="panel catalog-panel">
+      <div class="panel-header">
+        <h2>🌐 Explore Content</h2>
+        <span class="panel-subtitle">Articles, music, video, open websites, AI &amp; 3D worlds</span>
+      </div>
+
+      <div id="contentCatalogList" class="catalog-list"></div>
+
+      <!-- Collapsible More Info for Category Averages -->
+      <details class="web-expander">
+        <summary>ℹ️ View Average Category Prices</summary>
+        <div class="web-expander-body">
+          <p style="margin-bottom:8px;">Typical per-minute rates and buyout goals across categories:</p>
+          <div id="categoryOracleList" class="oracle-list"></div>
+        </div>
+      </details>
+    </section>
+
+    <!-- CENTER COLUMN: CLEAN VIEWPORT -->
+    <section class="panel viewer-panel">
+      <!-- Simple Countdown & Meter Banner -->
+      <div id="sessionStageBanner" class="stage-banner stage-grace">
+        <div class="stage-left">
+          <span class="stage-icon" id="stageIcon">⏱️</span>
+          <div>
+            <div class="stage-title" id="stageTitle">Starts in 10s</div>
+            <div class="stage-subtitle" id="stageSubtitle">$0.0000 during preview countdown</div>
+          </div>
+        </div>
+        <div class="stage-right mono">
+          <div class="live-timer" id="focusedTimeDisplay">10s</div>
+          <div class="live-cost" id="sessionCostDisplay">$0.0000 / $0.1200</div>
+        </div>
+      </div>
+
+      <!-- Active Content Viewport -->
+      <div class="content-viewport" id="contentViewport">
+        <div class="content-meta-bar">
+          <span class="category-pill" id="viewCategoryPill">ARTICLE</span>
+          <span class="decay-pill" id="viewDecayPill">Community Goal: $420 / $1,000</span>
+          <span class="category-pill" id="viewSplitPill">100% to Creator</span>
+          <span class="zscore-pill hidden" id="viewZScorePill"></span>
+          <span class="category-pill hidden" id="viewEpochPill"></span>
+        </div>
+
+        <div class="title-thumbs-row">
+          <div>
+            <h2 id="viewTitle" class="content-title">Loading content...</h2>
+            <div id="viewCreator" class="content-creator">Creator</div>
+          </div>
+          <!-- SIMPLE THUMBS-UP BUTTON -->
+          <button id="thumbsUpBtn" class="btn-thumbs-up" title="Boost this creator (costs you $0 extra)">
+            👍 <span id="thumbsUpCountBadge" class="mono">142</span>
+          </button>
+        </div>
+
+        <!-- Clickable Creator Note & Community Goal -->
+        <details class="web-expander">
+          <summary>ℹ️ Why this price? &amp; Community Buyout Goal</summary>
+          <div class="web-expander-body">
+            <div id="creatorRationaleBox" style="margin-bottom: 10px;">
+              <strong>Creator's Note:</strong> <span id="creatorRationaleText"></span>
+            </div>
+            <div class="buyout-progress-wrap">
+              <div class="unlock-label">
+                <span>🌍 <strong>Community Buyout Goal:</strong> Price drops to near-zero once reached!</span>
+                <span id="buyoutProgressText" class="mono text-emerald">$420.50 / $1,000.00 (42.1%)</span>
+              </div>
+              <div class="unlock-bar-bg">
+                <div id="buyoutBarFill" class="unlock-bar-fill" style="width: 42.1%"></div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- Interactive Content Body -->
+        <div id="viewBody" class="content-body"></div>
+
+        <!-- Simple Action Controls -->
+        <div class="viewport-footer">
+          <div class="unlock-progress-wrap">
+            <div class="unlock-label">
+              <span>Session Progress</span>
+              <span id="unlockPercentText" class="mono">25%</span>
+            </div>
+            <div class="unlock-bar-bg">
+              <div id="unlockBarFill" class="unlock-bar-fill" style="width: 25%"></div>
+            </div>
+          </div>
+          <div class="viewport-actions">
+            <button id="bounceBtn" class="btn-outline btn-sm">↩️ Leave Early ($0)</button>
+            <button id="fastForwardBtn" class="btn-secondary btn-sm">⏩ +15s</button>
+            <button id="simulateViralBtn" class="btn-primary btn-sm">🚀 Simulate +250 Viewers</button>
+            <button id="epochResetBtn" class="btn-secondary btn-sm hidden">🗓️ +36h</button>
+            <button id="metaverseZoneBtn" class="btn-secondary btn-sm hidden">🕹️ 3D Zone</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collapsible Pricing Curves for Curious Users -->
+      <details class="web-expander">
+        <summary>🔬 Show Live Pricing Curves (Technical Info)</summary>
+        <div class="web-expander-body">
+          <div class="charts-grid">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h4>📈 Session Curve &amp; Rate</h4>
+              </div>
+              <canvas id="sCurveCanvas" width="440" height="185"></canvas>
+            </div>
+            <div class="chart-card">
+              <div class="chart-header">
+                <h4>🌍 Community Buyout Curve</h4>
+              </div>
+              <canvas id="decayCurveCanvas" width="440" height="185"></canvas>
+            </div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- RIGHT COLUMN: SIMPLE CONTROLS + CLICKABLE "MORE INFO" DRAWERS -->
+    <section class="panel protocol-panel">
+      <div class="panel-header">
+        <h2>✨ Your Attention Settings</h2>
+        <span class="panel-subtitle">Simple controls. Click any item below for more information.</span>
+      </div>
+
+      <!-- 1. Smart Quality Rebalancing (Thumbs Up) -->
+      <details class="web-expander" open>
+        <summary>👍 How "Thumbs Up" Works (Costs You $0 Extra)</summary>
+        <div class="web-expander-body">
+          <p style="margin-bottom:8px;">
+            Giving a <strong>👍</strong> never increases your daily spending. It automatically shifts more of your daily budget toward pages you liked (up to <strong>2x</strong>) and slightly less toward pages you didn't upvote.
+          </p>
+          <div class="macro-metrics-row">
+            <div class="macro-stat">
+              <span>Un-liked Pages</span>
+              <strong class="mono text-amber" id="nonUpvotedMultDisplay">0.67x</strong>
+              <small>At least 50%</small>
+            </div>
+            <div class="macro-stat">
+              <span>👍 Liked Pages</span>
+              <strong class="mono text-emerald" id="upvotedMultDisplay">1.67x</strong>
+              <small>Up to 2x boost</small>
+            </div>
+          </div>
+          <span class="hidden" id="thumbsRatioBadge"></span>
+        </div>
+      </details>
+
+      <!-- 2. Monthly Affordability Protection -->
+      <details class="web-expander">
+        <summary>⚖️ Monthly Affordability Cap ($90/mo Protection)</summary>
+        <div class="web-expander-body">
+          <p style="margin-bottom:8px;">
+            Automatically adjusts prices if average user spending ever rises above a fair monthly share of income (~$90–$100/mo).
+          </p>
+          <span id="macroStatusBadge" class="macro-badge balanced">BALANCED</span>
+          <div class="slider-group" style="margin-top:8px;">
+            <div class="slider-label">
+              <span>Average User Monthly Spend</span>
+              <strong class="mono" id="avgMonthlySpendVal">$68.00 / mo</strong>
+            </div>
+            <input type="range" id="avgMonthlySpendSlider" min="30" max="160" step="1" value="68" />
+          </div>
+          <div class="slider-group">
+            <div class="slider-label">
+              <span>Median Monthly Salary</span>
+              <strong class="mono" id="medianSalaryVal">$4,300 / mo</strong>
+            </div>
+            <input type="range" id="medianSalarySlider" min="2500" max="7500" step="100" value="4300" />
+          </div>
+          <div class="slider-group">
+            <div class="slider-label">
+              <span>Inflation Adjustment</span>
+              <strong class="mono" id="inflationVal">+0.0%</strong>
+            </div>
+            <input type="range" id="inflationSlider" min="0" max="25" step="0.5" value="0" />
+          </div>
+          <div class="macro-metrics-row">
+            <div class="macro-stat">
+              <span>Monthly Ceiling</span>
+              <strong class="mono" id="macroCeilingDisplay">$94.60 / mo</strong>
+              <small id="macroCeilingReason"></small>
+            </div>
+            <div class="macro-stat">
+              <span>Price Adjustment</span>
+              <strong class="mono text-cyan" id="gammaScalarDisplay">1.00x</strong>
+              <small id="gammaEffectText"></small>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- 3. Technical Details & Private Batch Settlement -->
+      <details class="web-expander">
+        <summary>🔬 Extra Technical Details &amp; Activity Log</summary>
+        <div class="web-expander-body">
+          <p style="margin-bottom:8px;">
+            Payments are grouped privately so nobody can link your wallet to the pages you view, with $0 transaction fees.
+          </p>
+          <span class="hidden" id="pendingSigCountBadge"></span>
+          <span class="hidden" id="voucherNonceText"></span>
+          <pre id="liveVoucherJson" class="voucher-json"></pre>
+          <div id="cosignersList" class="cosigners-list hidden"></div>
+          <span class="hidden" id="pooledTotalAmountText"></span>
+          <button id="settleBatchBtn" class="btn-emerald btn-full" style="margin: 8px 0;">
+            ⚡ Settle Pending Payments ($0 Fee)
+          </button>
+          <div class="tx-log-wrap">
+            <h4>Recent Activity</h4>
+            <div id="txLogList" class="tx-log-list"></div>
+          </div>
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <!-- ======================================================================= -->
+  <!-- VIEW 2: PUBLISHER & PLATFORM EMBED STUDIO (v2.0)                        -->
+  <!-- ======================================================================= -->
+  <main id="publisherWorkspace" class="studio-grid hidden">
+    <section class="panel studio-config-panel">
+      <div class="panel-header">
+        <h2>🛠️ Publisher, Platform (Netflix/YouTube) &amp; Creator Studio</h2>
+        <span class="panel-subtitle">Configure S-Curve, Collective Buyout Target ($R_{\text{target}}$), Platform/Co-Creator Splits &amp; Rationale</span>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-field full-width">
+          <label>Content / Stream / 3D World Title</label>
+          <input type="text" id="pubTitleInput" class="text-input" value="Frontline Investigative Report: Conflict Zone Dispatch" />
+        </div>
+
+        <div class="form-field">
+          <label>Category (Auto-Verified via MIME/DOM)</label>
+          <select id="pubCategorySelect" class="select-input">
+            <option value="ARTICLE">📰 Newspaper / Investigative Article</option>
+            <option value="VIDEO">🎬 Video Platform (Netflix / YouTube / HLS)</option>
+            <option value="AUDIO">🎵 Music / Lossless Audio Stream</option>
+            <option value="UN_PAYWALLED">🌐 Open-Web Un-Paywalled (Passive Patronage)</option>
+            <option value="AI_COMPUTE">🤖 AI Model (EU AI Act Open-Source RAG)</option>
+            <option value="ONLINE_LESSON">🎓 Online Course / 3D Metaverse Museum</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label>Creator Stealth Meta-Address / Wallet</label>
+          <input type="text" id="pubCreatorInput" class="text-input mono" value="st:eth:0x84B2...E91C" />
+        </div>
+
+        <div class="form-field">
+          <div class="slider-label">
+            <span>Initial Max Cap ($P_{\text{init}}$)</span>
+            <strong class="mono text-cyan" id="pubPInitVal">$0.120</strong>
+          </div>
+          <input type="range" id="pubPInitSlider" min="0.005" max="0.80" step="0.005" value="0.12" />
+        </div>
+
+        <div class="form-field">
+          <div class="slider-label">
+            <span>Post-Buyout Floor ($P_{\text{floor}}$)</span>
+            <strong class="mono text-emerald" id="pubPFloorVal">$0.005</strong>
+          </div>
+          <input type="range" id="pubPFloorSlider" min="0.001" max="0.05" step="0.001" value="0.005" />
+        </div>
+
+        <div class="form-field">
+          <div class="slider-label">
+            <span>Collective Buyout Target ($R_{\text{target}}$)</span>
+            <strong class="mono text-amber" id="pubRTargetVal">$1,000</strong>
+          </div>
+          <input type="range" id="pubRTargetSlider" min="100" max="50000" step="100" value="1000" />
+        </div>
+
+        <div class="form-field">
+          <div class="slider-label">
+            <span>Platform vs. Creator Split (% to Platform)</span>
+            <strong class="mono" id="pubPlatformSplitVal">0% Platform / 100% Creator</strong>
+          </div>
+          <input type="range" id="pubPlatformSplitSlider" min="0" max="100" step="5" value="0" />
+        </div>
+
+        <div class="form-field">
+          <div class="slider-label">
+            <span>Free Grace ($t_{\text{grace}}$) &amp; Cap ($t_{\text{cap}}$)</span>
+            <strong class="mono" id="pubTGraceVal">10s → 90s</strong>
+          </div>
+          <input type="range" id="pubTGraceSlider" min="5" max="25" step="1" value="10" />
+          <input type="range" id="pubTCapSlider" min="30" max="600" step="10" value="90" />
+        </div>
+
+        <div class="form-field">
+          <div class="slider-label">
+            <span>Co-Creator Multi-Wallet Split</span>
+            <strong class="mono" id="pubEpochResetVal">2 Co-Creators (60% / 40%)</strong>
+          </div>
+          <input type="range" id="pubEpochResetSlider" min="24" max="48" step="12" value="36" />
+          <input type="hidden" id="pubAlphaSlider" value="0.0018" />
+          <span id="pubTCapVal" class="hidden"></span>
+          <span id="pubAlphaVal" class="hidden"></span>
+        </div>
+
+        <div class="form-field full-width">
+          <label>💬 Creator Pricing &amp; Collective Buyout Rationale (Visible to Users)</label>
+          <input type="text" id="pubRationaleInput" class="text-input" value="Independent frontline reporting from conflict zone; $1,000 collective target covers satellite uplink &amp; translator safety." />
+        </div>
+      </div>
+
+      <!-- LIVE TWO-AXIS MARKET BAND GUARDRAIL FEEDBACK CARD -->
+      <div id="studioBandCard" class="studio-band-card green-zone">
+        <div class="band-card-header">
+          <span id="studioBandIcon" class="band-icon">✅</span>
+          <div>
+            <h4 id="studioBandTitle">Competitive Green Zone (Both Rate &amp; R_target Fair)</h4>
+            <p id="studioBandDesc">Your rate and collective buyout target sit within the category band. Zero popups for users!</p>
+          </div>
+        </div>
+        <div class="band-metrics-grid mono">
+          <div>
+            <span>Your Rate / Min</span>
+            <strong id="studioRatePerMin">$0.080 / min</strong>
+          </div>
+          <div>
+            <span>Category Avg ($\mu_M$)</span>
+            <strong id="studioCatAvg">$0.045 / min</strong>
+          </div>
+          <div>
+            <span>Buyout Target $R_{\text{target}}$</span>
+            <strong id="studioOutlierLimit">$1,000 (Avg $500)</strong>
+          </div>
+          <div>
+            <span>Rate Z-Score</span>
+            <strong id="studioZScore">+1.2σ</strong>
+          </div>
+        </div>
+      </div>
+
+      <button id="publishToCatalogBtn" class="btn-emerald btn-full">
+        🚀 Publish Custom Item to Live Catalog &amp; Test Now
+      </button>
+    </section>
+
+    <!-- RIGHT: STEP-BY-STEP CREATOR SETUP & CODE GENERATOR -->
+    <section class="panel studio-code-panel">
+      <div class="panel-header">
+        <h2>🚀 Step-by-Step Website Monetization</h2>
+        <span class="panel-subtitle">Choose how you want to set up your site and redeem your earnings</span>
+      </div>
+
+      <!-- STEP-BY-STEP COMPARISON OF SETUP METHODS -->
+      <div class="subpanel">
+        <div class="subpanel-header">
+          <h3>1️⃣ Recommended: Direct Wallet Setup (MetaMask)</h3>
+          <span class="macro-badge balanced" id="creatorMetaMaskBadge">Fastest Payouts</span>
+        </div>
+        <p class="subpanel-desc">
+          Connect your MetaMask wallet (on Base Sepolia Testnet) to auto-fill your address and generate your 1-line website tag. Payments arrive directly in your wallet with zero waiting.
+        </p>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <button id="creatorConnectMetaMaskBtn" class="btn-primary btn-sm">
+            🦊 Connect MetaMask &amp; Auto-Fill Address (Base Sepolia)
+          </button>
+          <span id="creatorMetaMaskStatus" class="mono text-emerald" style="font-size:0.75rem;"></span>
+        </div>
+        <details class="web-expander">
+          <summary>ℹ️ More info &amp; redemption trade-offs</summary>
+          <div class="web-expander-body">
+            <strong>Why choose this?</strong> Money goes straight to your wallet every day with <strong>$0 transaction fees</strong> and no middleman. You can swap or withdraw anytime.<br/>
+            <strong>Trade-off:</strong> Takes ~2 minutes upfront to set up MetaMask if you don't already have a crypto wallet.
+          </div>
+        </details>
+      </div>
+
+      <div class="subpanel">
+        <div class="subpanel-header">
+          <h3>2️⃣ Easiest Start: 60-Second URL Tag (No Wallet Needed Yet)</h3>
+          <span class="macro-badge balanced mono" id="creatorEscrowBadge">$142.50 Ready to Redeem</span>
+        </div>
+        <p class="subpanel-desc">
+          Add a single <code>&lt;meta&gt;</code> tag with your website URL right now. Earnings are safely held for your domain automatically until you're ready to redeem them.
+        </p>
+        <div class="form-grid" style="margin-bottom: 8px;">
+          <div class="form-field">
+            <label>Your Website Domain</label>
+            <input type="text" id="creatorDomainInput" class="text-input mono" value="aliceblog.com" />
+          </div>
+          <div class="form-field">
+            <label>How to Redeem Your Money</label>
+            <select id="creatorFiatSweepSelect" class="select-input">
+              <option value="IBAN_EUR">🏦 Bank Transfer (SEPA / EUR)</option>
+              <option value="ACH_USD">🏦 Bank Transfer (ACH / USD)</option>
+              <option value="KEEP_USDC">💎 Instant Passkey Wallet (USDC)</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+          <button id="createPasskeyWalletBtn" class="btn-emerald btn-sm">
+            🔐 Verify Domain &amp; Redeem $142.50 Now
+          </button>
+          <span id="passkeyStatusText" class="mono text-cyan" style="font-size:0.75rem;">
+            Zero fees
+          </span>
+        </div>
+        <details class="web-expander">
+          <summary>ℹ️ More info &amp; redemption trade-offs (What's quicker vs. slower?)</summary>
+          <div class="web-expander-body">
+            <strong>What's quicker?</strong> Adding the tag to your website takes 30 seconds because you don't need to create a wallet today.<br/>
+            <strong>What takes longer?</strong> When you redeem your money for the first time, you must verify that you own the domain (via a quick DNS record or file upload). If you redeem to a traditional bank account (IBAN/ACH), bank processing takes <strong>1–2 business days</strong>, whereas redeeming to MetaMask or a Passkey wallet is <strong>instant</strong>.
+          </div>
+        </details>
+      </div>
+
+      <!-- CODE SNIPPETS -->
+      <div class="code-tabs">
+        <button class="code-tab active" data-snippet="meta">⚡ 1-Line Website Tag (&lt;meta&gt;)</button>
+        <button class="code-tab" data-snippet="html">Article / Blog Widget</button>
+        <button class="code-tab" data-snippet="ai_rag">🤖 Open-Source AI</button>
+        <button class="code-tab" data-snippet="metaverse">3D Worlds</button>
+        <button class="code-tab" data-snippet="hls">Video Platforms</button>
+        <button class="code-tab" data-snippet="solidity">Smart Contract</button>
+      </div>
+
+      <div class="code-box-wrap">
+        <div class="code-box-header">
+          <span id="snippetFileName" class="mono">website.html</span>
+          <button id="copySnippetBtn" class="btn-secondary btn-sm">📋 Copy Code</button>
+        </div>
+        <pre id="generatedCodePre" class="generated-code-pre mono"></pre>
+      </div>
+    </section>
+  </main>
+
+  <!-- ======================================================================= -->
+  <!-- VIEW 3: PRIVATE ON-DEVICE HISTORY, CULTURAL RANKINGS & ANTI-CARTEL LAB  -->
+  <!-- ======================================================================= -->
+  <main id="analyticsWorkspace" class="studio-grid hidden">
+    <!-- LEFT: 100% ON-DEVICE PRIVATE HISTORY (LIST + 2D TIMELINE GRAPH) & ANTI-CARTEL -->
+    <section class="panel">
+      <div class="panel-header">
+        <h2>🔒 100% On-Device Private Consumption History</h2>
+        <span class="panel-subtitle">Encrypted locally on your device. Never linked to your wallet on-chain.</span>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <h4>📈 2D Spend-Velocity Timeline (Time on X-Axis • Price/Min on Y-Axis • Dots = Content Switches)</h4>
+        </div>
+        <canvas id="historyTimelineCanvas" width="560" height="190"></canvas>
+      </div>
+
+      <div class="subpanel">
+        <div class="subpanel-header">
+          <h3>📜 Private Chronological Consumption Ledger</h3>
+          <span class="mono badge-outline" id="historyCountBadge">6 Sessions Recorded</span>
+        </div>
+        <div id="privateHistoryList" class="cosigners-list" style="max-height: 165px;"></div>
+      </div>
+
+      <!-- Anti-Cartel Historical Inflation vs Price-Creep Detector -->
+      <div class="subpanel">
+        <div class="subpanel-header">
+          <h3>🛡️ Anti-Cartel Price-Creep Detector (vs. 3.2% CPI Inflation)</h3>
+          <span id="cartelStatusBadge" class="macro-badge balanced">NO CARTEL DRIFT (+1.1% vs CPI)</span>
+        </div>
+        <p class="subpanel-desc">
+          Detects if creators coordinate to hike prices by +10%/mo. Users can set a Personal Hard $/min Ceiling below:
+        </p>
+        <div class="slider-group">
+          <div class="slider-label">
+            <span>Simulate Coordinated Creator Price Hike (Cartel Creep)</span>
+            <strong class="mono text-amber" id="cartelCreepVal">+0% (Honest Market)</strong>
+          </div>
+          <input type="range" id="cartelCreepSlider" min="0" max="40" step="2" value="0" />
+        </div>
+        <div class="slider-group">
+          <div class="slider-label">
+            <span>Your Personal Absolute Approval Ceiling (Manual Popup Trigger)</span>
+            <strong class="mono text-cyan" id="personalCeilingVal">$0.120 / min</strong>
+          </div>
+          <input type="range" id="personalCeilingSlider" min="0.03" max="0.30" step="0.01" value="0.12" />
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: GLOBAL & REGIONAL "HUMAN VALUE INDEX" (HVI) CULTURAL LEADERBOARD -->
+    <section class="panel">
+      <div class="panel-header">
+        <h2>🌍 Global &amp; Regional "Human Value Index" (HVI) Rankings</h2>
+        <span class="panel-subtitle">Ranks what humanity genuinely values spending time on (Focused Time × 👍 Ratio • ZK-Anonymized)</span>
+      </div>
+
+      <div class="code-tabs" id="regionFilterTabs">
+        <button class="code-tab active" data-region="GLOBAL">🌐 Global All</button>
+        <button class="code-tab" data-region="EU_FR">🇫🇷 Europe (FR/DE)</button>
+        <button class="code-tab" data-region="NA_EN">🇺🇸 North America (EN)</button>
+        <button class="code-tab" data-region="ASIA_JP">🇯🇵 East Asia (JP/KR)</button>
+        <button class="code-tab" data-region="LATAM_ES">🇧🇷 LatAm (ES/PT)</button>
+      </div>
+
+      <div id="culturalRankingsList" class="catalog-list"></div>
+
+      <div class="oracle-card">
+        <h3>🕵️ How Dual-Sided Privacy + Public Cultural Rankings Coexist</h3>
+        <p class="oracle-desc">
+          1. <strong>User Unlinkability:</strong> Your vouchers use blinded ZK notes so no blockchain observer can link your wallet to what you watched.<br/>
+          2. <strong>Creator Anonymity:</strong> Creator payouts route through one-time ERC-5564 Stealth Addresses (`0xStealth...`), hiding total earnings from prying eyes.<br/>
+          3. <strong>Public Cultural Value:</strong> Anonymous regional attestations prove aggregate focused hours and 👍 ratios per language/culture without exposing individuals.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ======================================================================= -->
+  <!-- VIEW 4: WALLET SAFETY, INSTANT REFUND & COMMUNITY GRANTS                -->
+  <!-- ======================================================================= -->
+  <main id="daoWorkspace" class="studio-grid hidden">
+    <!-- LEFT: WALLET SAFETY & INSTANT REFUND -->
+    <section class="panel">
+      <div class="panel-header">
+        <h2>🔒 Wallet Safety &amp; Instant Refund</h2>
+        <span class="panel-subtitle">Your funds stay in your control at all times, with a $200 safety cap and automatic 60-day refund.</span>
+      </div>
+
+      <div class="subpanel">
+        <div class="subpanel-header">
+          <h3>💳 Your Protected Wallet Balance</h3>
+          <span class="macro-badge balanced mono">Max Balance Cap: $200.00</span>
+        </div>
+        <p class="subpanel-desc">
+          Withdraw 100% of your remaining balance anytime in one click, or let the automatic 60-day inactivity refund return unspent funds to your original payment source.
+        </p>
+        <div class="viewport-actions" style="margin-top: 6px;">
+          <button id="oneTapRefundBtn" class="btn-danger btn-sm">
+            ↩️ Instant Refund (Return 100% of Balance)
+          </button>
+        </div>
+
+        <details class="web-expander">
+          <summary>🔬 Extra Technical Details (60-Day Auto-Refund &amp; Anti-Hijack Tests)</summary>
+          <div class="web-expander-body">
+            <p style="margin-bottom:8px;">
+              Held in an independent, non-amendable smart contract (<code>ImmutableUserVault.sol</code>) that tracks deposits in First-In-First-Out (FIFO) order so a third party sending $1 can never hijack your refund address:
+            </p>
+            <div id="fifoTranchesList" class="cosigners-list"></div>
+            <div class="viewport-actions" style="margin-top: 8px;">
+              <button id="testOverCapDepositBtn" class="btn-secondary btn-sm">
+                🧪 Test +$220 Deposit (Auto-Reimburse Over $200)
+              </button>
+              <button id="testDustAttackBtn" class="btn-secondary btn-sm">
+                🛡️ Simulate $1 Dust + 60-Day Refund
+              </button>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <!-- Collapsible Technical Governance Registry -->
+      <details class="web-expander">
+        <summary>🔬 Open-Source Security &amp; Verified Updates (Technical Info)</summary>
+        <div class="web-expander-body">
+          <p style="margin-bottom:8px;">
+            Official app updates are cryptographically verified on-chain so fake copies cannot alter fee settings.
+          </p>
+          <div class="macro-metrics-row">
+            <div class="macro-stat">
+              <span>Verified Release Hash</span>
+              <strong class="mono text-emerald" id="codeHashDisplay">0x7f83...91a4 (v2.0.0)</strong>
+            </div>
+            <div class="macro-stat">
+              <span>Governance Split</span>
+              <strong class="mono text-cyan" id="govSplitDisplay">33.3% Founder / 66.7% DAO</strong>
+              <small id="govTotalSupplyText">Supply: 1,500,000</small>
+            </div>
+          </div>
+          <button id="simulateAirdropBtn" class="btn-primary btn-sm" style="margin-top:8px;">
+            🌱 Test Contributor Airdrop
+          </button>
+        </div>
+      </details>
+    </section>
+
+    <!-- RIGHT: PLANETARY TAO DAO (ENCRYPTED-LOCALE CULTURAL & CREATOR GRANTS) -->
+    <section class="panel">
+      <div class="panel-header">
+        <h2>🌍 OpenStream Commons DAO — Localized Creator Grants</h2>
+        <span class="panel-subtitle">Funded by excess Pool Yield (above L2 gas) &amp; surplus 1% Dev Surcharge. Voted via Encrypted ZK-Locale.</span>
+      </div>
+
+      <div class="subpanel">
+        <div class="subpanel-header">
+          <h3>🔐 Your Encrypted Zero-Knowledge Locale &amp; Voter Eligibility</h3>
+          <span class="macro-badge balanced mono">✓ Eligible (&gt;1 Yr Active User)</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Select Private Locale (Encrypted On-Device)</label>
+            <select id="zkLocaleSelect" class="select-input">
+              <option value="LOCALE_PARIS_FR">🇫🇷 Europe • France • Paris (Town Level)</option>
+              <option value="LOCALE_BERLIN_DE">🇩🇪 Europe • Germany • Berlin (Town Level)</option>
+              <option value="LOCALE_TOKYO_JP">🇯🇵 East Asia • Japan • Tokyo</option>
+              <option value="LOCALE_MONTREAL_CA">🇨🇦 North America • Canada • Montréal</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Surplus Grant Pool Available</label>
+            <strong class="mono text-emerald" style="font-size: 16px;" id="taoGrantPoolDisplay">$14,820.50 USDC</strong>
+            <small class="text-muted">From excess 4.6% APY yield + 1% dev surcharge</small>
+          </div>
+        </div>
+      </div>
+
+      <div id="taoProposalsList" class="catalog-list"></div>
+    </section>
+  </main>
+
+  <!-- MODAL 1: OUTLIER PRICE / RATIONALE WARNING POPUP -->
+  <div id="outlierModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-icon">⚠️</div>
+      <h3 id="modalTitle">Price Band Outlier Detected!</h3>
+      <p id="modalDescription" class="modal-desc">
+        This content exceeds the category market band (or your personal $/min ceiling). Your Session Key paused the meter at the end of the free grace window.
+      </p>
+      <div class="rationale-box" style="text-align: left; margin-bottom: 12px;">
+        <strong>💬 Creator's Submitted Pricing Rationale:</strong>
+        <div id="modalCreatorRationale" style="margin-top: 4px; color: #f3f4f6;"></div>
+      </div>
+      <div class="modal-comparison-box">
+        <div class="comp-item">
+          <span>This Content's Rate</span>
+          <strong class="mono text-danger" id="modalContentRate">$0.650 / min</strong>
+        </div>
+        <div class="comp-item">
+          <span>Category Market Average ($\mu_M$)</span>
+          <strong class="mono text-emerald" id="modalMarketAvg">$0.045 / min</strong>
+        </div>
+        <div class="comp-item">
+          <span>Statistical Deviation ($Z$-Score)</span>
+          <strong class="mono text-amber" id="modalZScore">+3.9σ (Outlier > 1.5σ)</strong>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="modalRejectBtn" class="btn-outline">🛑 Leave Content ($0.00 Charged)</button>
+        <button id="modalApproveBtn" class="btn-danger">🔓 Authorize Rate for This Session</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: END-OF-$2.00-VIRTUAL-TRIAL SUBSCRIPTION COMPARISON RECEIPT -->
+  <div id="trialReceiptModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal-card" style="border-color: var(--accent-emerald); max-width: 530px;">
+      <div class="modal-icon">🎉</div>
+      <h3>Your $2.00 Free Virtual Trial Receipt!</h3>
+      <p class="modal-desc">
+        You just experienced how OpenStream replaces annoying monthly subscriptions. Look at how much content your $2.00 virtual trial unlocked:
+      </p>
+      <div class="modal-comparison-box">
+        <div class="comp-item">
+          <span>📰 Investigative Articles Read (7 Newspapers)</span>
+          <strong class="mono text-cyan">19 Articles ($0.62)</strong>
+        </div>
+        <div class="comp-item">
+          <span>🎵 Lossless Music &amp; 🎬 4K Video Streams</span>
+          <strong class="mono text-cyan">24 Tracks + 4 Films ($0.94)</strong>
+        </div>
+        <div class="comp-item">
+          <span>🤖 AI Compute Queries &amp; 🎓 Online Lessons</span>
+          <strong class="mono text-cyan">18 Prompts + 2 Modules ($0.44)</strong>
+        </div>
+        <hr style="border-color: #2a364f; margin: 4px 0;" />
+        <div class="comp-item">
+          <span>Legacy Subscriptions (NYT + Netflix + Spotify + AI)</span>
+          <strong class="mono text-danger">$92.00 / month</strong>
+        </div>
+        <div class="comp-item">
+          <span>Your Projected OpenStream Monthly Spend</span>
+          <strong class="mono text-emerald">$13.80 / month (You Save $78.20/mo!)</strong>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="closeTrialModalBtn" class="btn-outline">Later</button>
+        <button id="convertTrialTopUpBtn" class="btn-emerald">⚡ Charge Up +$10.00 USDC &amp; Keep Streaming</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

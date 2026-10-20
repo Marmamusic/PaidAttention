@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PaidAttention</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <!-- TOP HEADER -->
+  <header class="ext-header">
+    <div class="brand-row">
+      <div class="logo">⚡</div>
+      <div>
+        <h1>PaidAttention</h1>
+        <p>Pay attention online</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span class="odometer" id="extOdometer">$0.0002/s</span>
+      <button id="openInfoBtn" class="icon-btn" title="How it works &amp; features">ℹ️</button>
+      <button id="openSettingsBtn" class="icon-btn" title="Advanced settings">⚙️</button>
+    </div>
+  </header>
+
+  <!-- ===================================================================== -->
+  <!-- VIEW 1: STREAMLINED MAIN VIEW                                         -->
+  <!-- ===================================================================== -->
+  <main id="mainView">
+    <!-- Active Page Card -->
+    <section class="card">
+      <div class="card-top">
+        <span class="domain-name" id="activeDomainText">example.com</span>
+        <button id="popupThumbsUpBtn" class="btn-thumb">👍 Boost</button>
+      </div>
+      <div class="meter-status-row">
+        <span id="activeFocusStats" class="mono muted-stats">Focused: 0s • Paid: $0.0000</span>
+      </div>
+    </section>
+
+    <!-- Wallet Card -->
+    <section class="card">
+      <div class="card-top">
+        <div class="title-with-info">
+          <strong>Wallet</strong>
+          <button id="walletMoreInfoBtn" class="inline-info-link" title="Learn how your wallet is protected">ℹ️ More info</button>
+        </div>
+        <span class="mono text-emerald" id="vaultBalText">$24.50</span>
+      </div>
+
+      <div class="split-grid mono">
+        <div>
+          <span>Free Trial Credit</span>
+          <strong id="trialBalText">$2.00 left</strong>
+        </div>
+        <div>
+          <span>Today's Spend</span>
+          <strong id="dailySpentText">$0.42 / $3.00</strong>
+        </div>
+      </div>
+
+      <div class="btn-row" style="margin-top: 8px;">
+        <button id="topUpBtn" class="btn-secondary">+ Add $20</button>
+        <button id="instantExitBtn" class="btn-danger-outline">Instant Refund</button>
+      </div>
+    </section>
+
+    <!-- Single Button to Open Step-by-Step Creator Setup -->
+    <button id="openCreatorViewBtn" class="btn-creator-cta">
+      🚀 Own this site? Monetize in 60 seconds →
+    </button>
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- VIEW 2: STEP-BY-STEP CREATOR MONETIZATION GUIDE                       -->
+  <!-- ===================================================================== -->
+  <section id="creatorView" class="subview hidden">
+    <div class="subview-header">
+      <button class="back-btn" data-back="mainView">← Back</button>
+      <strong>Monetize Your Website</strong>
+    </div>
+
+    <!-- Option 1: Direct MetaMask Setup (Recommended) -->
+    <div class="card method-card recommended-card">
+      <div class="card-top">
+        <strong>1. Direct Wallet (MetaMask)</strong>
+        <span class="pill-emerald">Recommended • Fastest Payout</span>
+      </div>
+      <ol class="simple-steps">
+        <li>Connect your MetaMask (or any L2 wallet) address below.</li>
+        <li>Paste the generated tag into your website's <code>&lt;head&gt;</code>.</li>
+        <li>Receive payments directly in your wallet with zero waiting.</li>
+      </ol>
+      <div class="btn-row" style="margin-bottom: 5px;">
+        <input type="text" id="creatorWalletInput" class="text-input mono" style="margin-bottom:0; flex:2;" placeholder="0xYourMetaMaskAddress..." value="0x71C4...89A2" />
+        <button id="extConnectMetaMaskBtn" class="btn-secondary" style="flex:1;" title="Auto-fill from MetaMask on active tab">🦊 Connect</button>
+      </div>
+      <code id="directMetaCode" class="code-snippet">&lt;meta name="paidattention" content="wallet:0x71C4...89A2" /&gt;</code>
+      <button id="copyDirectMetaBtn" class="btn-emerald btn-full">📋 Copy Direct Wallet Tag</button>
+
+      <!-- Clickable More Info & Technical Details -->
+      <details class="info-expander">
+        <summary>ℹ️ More info &amp; redemption trade-offs</summary>
+        <p>
+          <strong>Why choose this?</strong> Money goes straight to your wallet every day with <strong>$0 gas fees</strong> and no middleman. You can swap or withdraw anytime.<br/>
+          <strong>Trade-off:</strong> Takes ~2 minutes upfront if you don't already have MetaMask installed.
+        </p>
+      </details>
+      <details class="info-expander">
+        <summary>🔬 Extra technical details</summary>
+        <p>
+          Uses L2 state-channel batch settlement (Base / Arbitrum USDC) with optional ERC-5564 stealth addresses so your total income stays private on-chain.
+        </p>
+      </details>
+    </div>
+
+    <!-- Option 2: 60-Second URL / Domain Setup (No Wallet Upfront) -->
+    <div class="card method-card">
+      <div class="card-top">
+        <strong>2. Instant URL Tag (No Wallet Yet)</strong>
+        <span class="pill-cyan">Easiest Start (60s)</span>
+      </div>
+      <ol class="simple-steps">
+        <li>Copy and paste this 1-line tag into your website's <code>&lt;head&gt;</code> right now.</li>
+        <li>Visitor payments are safely held for your domain automatically.</li>
+        <li>Redeem anytime later via FaceID Passkey or Bank transfer.</li>
+      </ol>
+      <code id="urlMetaCode" class="code-snippet">&lt;meta name="paidattention" content="domain:example.com" /&gt;</code>
+      <div class="btn-row">
+        <button id="copyUrlMetaBtn" class="btn-secondary">📋 Copy URL Tag</button>
+        <button id="claimPasskeyBtn" class="btn-emerald">🔐 Redeem Earnings</button>
+      </div>
+      <div id="claimResultText" class="claim-status"></div>
+
+      <!-- Clickable More Info & Technical Details -->
+      <details class="info-expander">
+        <summary>ℹ️ More info &amp; redemption trade-offs</summary>
+        <p>
+          <strong>Why choose this?</strong> Zero crypto setup needed today—you can add the tag in 60 seconds and set up your payout later.<br/>
+          <strong>Trade-off:</strong> When redeeming for the first time, you must verify domain ownership (via a DNS record or file upload). Bank/IBAN transfers take 1–2 business days vs. instant crypto payouts with MetaMask.
+        </p>
+      </details>
+      <details class="info-expander">
+        <summary>🔬 Extra technical details</summary>
+        <p>
+          Unclaimed earnings accumulate in an on-chain DNSSEC Domain Escrow smart contract (<code>domainEscrow[keccak256(domain)]</code>) and can be claimed gaslessly using an ERC-4337 WebAuthn Passkey wallet.
+        </p>
+      </details>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- VIEW 3: HOW IT WORKS & FEATURES (CLICKABLE EXPLANATIONS)              -->
+  <!-- ===================================================================== -->
+  <section id="infoView" class="subview hidden">
+    <div class="subview-header">
+      <button class="back-btn" data-back="mainView">← Back</button>
+      <strong>How PaidAttention Works</strong>
+    </div>
+
+    <div class="card">
+      <details class="info-expander" open>
+        <summary>⏱️ 15-Second Free Preview &amp; Page Cap</summary>
+        <p>
+          When you open a page, a <strong>15-second countdown</strong> runs before the meter starts. If you close clickbait within 15 seconds, you pay <strong>$0.00</strong>. Once the meter reaches the page's cap (e.g., $0.015), it stops completely so slow readers never pay extra.
+        </p>
+      </details>
+
+      <details class="info-expander" open>
+        <summary>👍 How "Boost" (Thumbs Up) Works</summary>
+        <p>
+          Clicking <strong>👍</strong> never costs you extra money! It simply rebalances your daily spending so the creators you liked receive up to <strong>2x more</strong>, while pages you didn't upvote receive slightly less.
+        </p>
+      </details>
+
+      <details class="info-expander" open>
+        <summary>🔒 Wallet Protection &amp; Automatic Refunds</summary>
+        <p>
+          Your wallet is protected by an independent smart contract that nobody can drain or alter:
+          <br/>• <strong>Instant Refund:</strong> Withdraw 100% of your remaining balance in one click at any time.
+          <br/>• <strong>$200 Safety Ceiling:</strong> Your wallet never holds more than $200 at once.
+          <br/>• <strong>60-Day Auto-Refund:</strong> If you stop using the app for 60 days, your remaining funds automatically return to the wallet or card that funded them.
+        </p>
+      </details>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- VIEW 4: ADVANCED SETTINGS                                             -->
+  <!-- ===================================================================== -->
+  <section id="settingsView" class="subview hidden">
+    <div class="subview-header">
+      <button class="back-btn" data-back="mainView">← Back</button>
+      <strong>Advanced Settings</strong>
+    </div>
+
+    <div class="card">
+      <div class="setting-row">
+        <div>
+          <strong>👍 Smart Quality Rebalancing</strong>
+          <p class="setting-desc">Automatically shift a portion of your daily spend toward pages you give a Thumbs Up (costs you $0 extra).</p>
+        </div>
+        <button id="toggleQualityPoolBtn" class="toggle-btn active">ON</button>
+      </div>
+    </div>
+  </section>
+
+  <script src="popup.js"></script>
+</body>
+</html>

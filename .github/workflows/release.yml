@@ -1,0 +1,37 @@
+name: PaidAttention CI & Extension Release Packager
+
+on:
+  push:
+    branches: [ main, master ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-package-extension:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Verify Core Files & Manifest V3
+        run: |
+          test -f extension/manifest.json
+          test -f extension/popup.html
+          test -f extension/content-script.js
+          test -f contracts/ImmutableUserVault.sol
+          test -f contracts/OpenStreamProtocol.sol
+          echo "✅ All core PaidAttention files verified."
+
+      - name: Package Chrome Extension (.zip)
+        run: |
+          cd extension
+          zip -r ../paidattention-extension-v2.0.zip .
+          cd ..
+          ls -lh paidattention-extension-v2.0.zip
+
+      - name: Upload Extension Zip Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: paidattention-chrome-extension
+          path: paidattention-extension-v2.0.zip
