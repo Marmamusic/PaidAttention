@@ -1,6 +1,6 @@
 # ⚡ PaidAttention (v2.0) — Pay Attention Online
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
+[![License: AGPLv3 + MIT SDK](https://img.shields.io/badge/License-AGPLv3%20%28Core%29%20%2B%20MIT%20%28SDK%29-emerald.svg)](LICENSE)
 [![Network: Ethereum L2](https://img.shields.io/badge/Network-Base%20%7C%20Arbitrum%20%7C%20Optimism-06b6d4.svg)](contracts/OpenStreamProtocol.sol)
 [![Zero Gas: Yield Subsidized](https://img.shields.io/badge/Gas-100%25%20Yield%20Subsidized-10b981.svg)](SPECIFICATION.md)
 
@@ -65,4 +65,6 @@ start examples/newspaper-demo.html
 
 ## 📄 License
 
-Released under the [MIT License](LICENSE).
+Dual-licensed under **[GNU AGPLv3 (Core Protocol, Contracts & Browser Extension) + MIT License (`sdk/` & `examples/`)](LICENSE)**:
+- **Core Platform (`AGPL-3.0-or-later`):** Ensures the protocol, browser extension, and AI attribution algorithms remain permanently open-source and prevents closed-source commercial clones.
+- **Website Embed SDK (`MIT`):** Allows any personal website, blog, newspaper, or streaming service to embed `<meta name="paidattention">` tags and `sdk/openstream-sdk.js` with zero legal friction.

@@ -2,7 +2,7 @@
 
 > **Tagline:** *Pay attention online*  
 > **Version:** 2.0.0 (Complete Architecture & Brainstorm Integration)  
-> **License:** Open Source (MIT / On-Chain Registry Governed)  
+> **License:** Dual License — GNU AGPLv3 (Core Protocol/Extension) + MIT (Website SDK)  
 > **Target Network:** Ethereum Layer-2 (Base / Arbitrum / Optimism)
 
 ---
