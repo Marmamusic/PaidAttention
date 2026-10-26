@@ -1,70 +1,135 @@
-# ⚡ PaidAttention (v2.0) — Pay Attention Online
+# ⚡ PaidAttention — Pay Attention Online
 
 [![License: AGPLv3 + MIT SDK](https://img.shields.io/badge/License-AGPLv3%20%28Core%29%20%2B%20MIT%20%28SDK%29-emerald.svg)](LICENSE)
-[![Network: Ethereum L2](https://img.shields.io/badge/Network-Base%20%7C%20Arbitrum%20%7C%20Optimism-06b6d4.svg)](contracts/OpenStreamProtocol.sol)
-[![Zero Gas: Yield Subsidized](https://img.shields.io/badge/Gas-100%25%20Yield%20Subsidized-10b981.svg)](SPECIFICATION.md)
+[![Zero Transaction Fees](https://img.shields.io/badge/Transaction%20Fees-%240.00-10b981.svg)](#how-it-works-in-detail)
+[![Setup Time: 60 Seconds](https://img.shields.io/badge/Creator%20Setup-60%20Seconds-06b6d4.svg)](#for-creators--websites-monetize-in-60-seconds)
 
-**PaidAttention** is an open-source, privacy-preserving, universally deployable micropayment protocol and planetary DAO for digital content and services—including **newspapers, music & video streaming (Netflix/YouTube), open-web blogs, 3D metaverses, AI compute, and online lessons**.
+**PaidAttention** is a free, open-source browser extension and wallet that replaces annoying monthly subscriptions and clickbait ads with **automatic micro-payments for the time you genuinely spend reading, watching, or listening online**.
 
-> 📄 **Read the Full v2.0 Technical & Mathematical Whitepaper:** [SPECIFICATION.md](SPECIFICATION.md)
-
----
-
-## ✨ Core Architectural Pillars (v2.0)
-
-1. **🛡️ Anti-Clickbait S-Curve with Hard Session Cap ($t_{\text{grace}} \to t_{\text{cap}}$)**
-   - **First $t_{\text{grace}}$ seconds (e.g., 10–15s) cost \$0.0000:** Bouncing from clickbait costs the user nothing and pays clickbait nothing.
-   - **Smooth S-Curve Ramp & Hard Cap ($t_{\text{cap}}$):** Payment accelerates only during genuine engagement and hits a strict cap $P_{\max}$ at $t_{\text{cap}}$, after which the marginal rate drops to **\$0.0000/sec**.
-2. **📉 Creator-Defined Collective Buyout Target ($R_{\text{target}}$) & Two-Axis Transparency**
-   - Creators set the cumulative revenue target $R_{\text{target}}$ (e.g., \$500 for an article, \$50M for a film) at which the content becomes "collectively purchased by humanity" and drops to its near-free floor $P_{\text{floor}}$.
-   - Users compare both the individual per-second rate and the collective buyout target $R_{\text{target}}$ against category averages, alongside a **Creator Pricing Rationale Box** (e.g., frontline war reporting vs. high-budget production).
-3. **👍 Zero-Sum $K/N$ Thumbs-Up Quality Pool (50% Floor / +100% Boost Cap)**
-   - Users can give a **Thumbs Up (👍)** to content they loved (with no Thumbs Down). Clicking 👍 is 100% budget-neutral for the user: a fraction $\rho = \min(K/N, 50\%)$ of their category spend is withheld into a **Thumbs-Up Pool** and redistributed to upvoted content—bounded so non-upvoted content never receives less than **50%** of its normal payout and upvoted content receives at most a **+100% boost** ($2\times$ normal payout).
-4. **⏳ 24h–48h Attention Epoch Reset & Anti-Restreaming Defense**
-   - Reaching $t_{\text{cap}}$ unlocks content for a 24h–48h epoch (bounded to $1.5\times$ media stream chunks to block pirate restreaming proxies). Returning days later to re-watch or re-read starts a fresh S-curve at the newly decayed price.
-5. **🎬 Enterprise Platform Splits (Netflix / YouTube) & Multi-Creator Royalties**
-   - Native smart-contract routing for platform vs. creator splits (from 100% platform share for Netflix licensing buyouts to 30%/70% splits for YouTube) plus multi-wallet percentage splitters for co-creators.
-6. **🌐 Paywall-Free "Open Web / Passive Patronage" Mode (`UN_PAYWALLED`) & Open-Source-First AI Attribution**
-   - **`UN_PAYWALLED` Category:** Websites and Wikipedia-like commons remain 100% free and unblocked for visitors without the plugin, while automatically streaming floor-level patronage ($P_{\text{floor}}$) after 15s from visitors with OpenStream active.
-   - **Phased AI Attribution (Open-Source AI First $\to$ EU AI Act Mandate):** Starts with drop-in open-source RAG middleware (`@openstream/ai-rag-attribution` for LangChain, LlamaIndex, Ollama, and HuggingFace) that splits prompt fees between AI compute (25–30%) and cited original human websites (70–75%, with DNSSEC escrow for unregistered sites). Once battle-tested with empirical creator revenue data in open-source AI, this serves as the reference standard to amend the EU AI Act and copyright law.
-7. **📊 Anti-Cartel Historical Inflation Tracker, Market-Band Guardrails & Macro Thermostat**
-   - Tracks historical category prices against real-world CPI inflation (~3–4%/yr) to defeat coordinated creator price-fixing cartels, flags statistical outliers ($Z > 1.5\sigma$), and uses a **Macroeconomic Purchasing-Power Thermostat ($\gamma_{\text{macro}}$)** to keep average human digital expenditure below an inflation- and salary-indexed **\$90–\$100/month** ceiling.
-8. **🎁 Promotional \$2.00 Virtual Trial Meter (Auto-Sunsetting at 1 Million Users)**
-   - During the bootstrap phase (< 1,000,000 organic users), new users get a non-withdrawable, expiring **\$2.00 Virtual Trial Meter** (paying \$0 to creators, eliminating Sybil faucet farming). When exhausted, a **Subscription Comparison Receipt Popup** shows their exact projected monthly savings vs. legacy subscriptions. Auto-discontinues once the network reaches 1M organic users.
-9. **🔒 Non-Amendable Custody Vault (`ImmutableUserVault.sol`) & 60-Day FIFO Auto-Refund**
-   - User funds sit in an immutable external smart contract outside governance control, enforcing a hard **\$100–\$200 max balance cap** (auto-reimbursing excess deposits), a **1-Tap Exit**, and a **60-Day Inactivity FIFO Proportional Auto-Refund** back to original funding wallets (defeating \$1 dust-hijack attacks).
-10. **🕵️ Dual-Sided ZK/Stealth Privacy, OpenStream Commons DAO & 1/3 Founder-Arbitrated Code Registry**
-    - Blinded ZK vouchers unlink user wallets from consumed content, and ERC-5564 Stealth Addresses protect creator anonymity—while aggregate encrypted regional telemetry powers a public **Human Value Index** ranking top qualitative content by region, language, and culture.
-    - Excess pool yield (above L2 gas) and excess **1% expiring developer surcharges** fund localized **OpenStream Commons DAO** creator grants voted on by 1-year+ organic users. Official code updates are pushed via an on-chain registry governed by a token where the founder permanently retains a **1/3 (33.33%) anti-dilution arbitration share**.
-11. **⚡ Animated Electric Utility Meter HUD, Private 2D History & 3D/Metaverse Trigger API**
-    - Features a mechanical-style spend velocity odometer, 100% on-device private consumption history (list view + interactive 2D price-vs-time curve), and a spatial event API (`onEnterZone`/`onExitZone`) for 3D virtual worlds like Decentraland.
-12. **🚀 60-Second Zero-Friction Creator Setup ("Personal Website to Bank Account") & `x402`/W3C Bridge**
-    - **Tier 1 (Zero-Wallet `<meta>` Tag):** Paste `<meta name="openstream" content="domain:aliceblog.com" />` on any personal website. Non-clickbait attention payments accumulate automatically in on-chain DNSSEC escrow before the creator even sets up a wallet.
-    - **Tier 2 (1-Click Passkey Biometric Smart Wallet):** Claim accumulated funds in 30 seconds via FaceID / TouchID / Windows Hello (`ERC-4337`) with zero seed phrases and zero gas fees (sponsored by the DeFi Yield Pool).
-    - **Tier 3 (Auto-Bank Off-Ramp):** Optional auto-sweep of L2 USDC into local EUR/USD bank accounts via SEPA IBAN / ACH / Stripe bridges.
-    - **W3C & `x402` Bridge:** Automatically wraps legacy `<meta name="monetization">` tags and `HTTP 402` endpoints with OpenStream's Anti-Clickbait S-Curve and $K/N$ Thumbs-Up Pool.
+Whenever you *pay attention* to something online, you effortlessly support the person who created it—**except for clickbait, which gets nothing.**
 
 ---
 
-## 🚀 Quickstart
+## 🌟 Why PaidAttention?
 
-```bash
-# 1. Open the interactive full-stack simulator & Publisher Embed Studio directly in your browser:
-start index.html
+### For Readers, Viewers & Listeners
+* **⏱️ 15-Second Free Preview (Zero Clickbait):** Every page starts with a 15-second free countdown. If an article or video turns out to be clickbait and you close the tab within 15 seconds, you pay **$0.00**.
+* **🛑 Never Pay Extra for Reading Slowly:** Every article, song, or video has a tiny, fixed maximum cap (for example, $0.015 for an article). Once you reach it, the meter stops completely—so you can take your time, re-read paragraphs, or leave the tab open at **$0.00/sec**.
+* **👍 "Boost" What You Love for Free:** Clicking **👍** on a page you loved **never costs you extra money**. Instead, it automatically shifts more of your daily budget toward the creators you liked and less toward pages you didn't upvote.
+* **💳 Strict Spending Limits & Instant Refund:** Your spending is automatically capped at **$3/day** (and **$90/month** across all digital media). Your wallet never holds more than $200, includes a 1-click **Instant Refund** button, and automatically refunds your money if you stop using the app for 60 days.
+* **🎁 $2.00 Free Trial:** Try the extension across the web with $2.00 in virtual trial credit before ever connecting a payment method, and see a clear receipt showing how much you save compared to monthly subscriptions.
 
-# 2. Or view the 3-line standalone publisher integration demo:
-start examples/newspaper-demo.html
-```
+### For Creators, Bloggers, Musicians & Platforms
+* **🚀 Set Up Your Website in 60 Seconds:** Add a single line of HTML to your personal website (or install our 1-click WordPress plugin). You don't even need a crypto wallet upfront—visitor payments accumulate safely for your domain until you're ready to redeem them to your bank account or wallet.
+* **🌍 Viral Content Gets Cheaper for Everyone:** Creators set a **Community Buyout Goal** (the amount needed to cover production costs and a fair profit). Once the public collectively reaches that goal, the content becomes nearly free for everyone else in the world.
+* **🎬 Works for Solo Bloggers & Streaming Giants:** Supports 100% direct-to-creator payouts for independent blogs, multi-artist splits for bands and co-authors, and platform/creator splits for services like YouTube or Netflix.
+* **🤖 Fair Payouts from Open-Source AI:** When open-source AI assistants use articles or websites to answer questions, PaidAttention automatically splits the fee so 70–75% goes directly to the original human websites that were cited.
 
-### 🧩 Load the Universal Browser Extension (`extension/`) in Chrome / Brave / Edge
-1. Open `chrome://extensions/` in your browser and enable **Developer mode** (top-right toggle).
-2. Click **Load unpacked** and select the `extension/` folder inside this repository (`c:\Users\RepairTest\Documents\Micro_pay\extension`).
-3. Visit any website or blog: the non-intrusive floating **OpenStream Ambient Pill** will track active focus past the 12-second anti-clickbait grace shield, let you boost pages with **👍 Thumbs Up ($K/N$ Pool)**, and let website owners copy their 1-line `<meta>` tag or claim DNSSEC escrow via Passkey!
+---
+
+## 🚀 Quickstart (Try It in 60 Seconds)
+
+### 1. Load the Browser Extension (Chrome, Brave, Edge)
+1. Download or clone this repository.
+2. Open `chrome://extensions/` in your browser and turn on **Developer mode** (top-right toggle).
+3. Click **Load unpacked** and select the [`extension/`](extension/) folder.
+4. Visit any website: you'll see the compact countdown pill (`15s` $\to$ `$0.0001 / $0.015`) and the **`👍`** button in the bottom-right corner!
+
+### 2. Open the Interactive Web App & Creator Studio
+Open [`index.html`](index.html) directly in your browser to explore the full interactive dashboard, test the **60-Second Website Monetization Studio**, or connect **MetaMask** on the free **Base Sepolia Testnet**.
+
+---
+
+## 🛠️ For Creators & Websites: Monetize in 60 Seconds
+
+You can start receiving micropayments on your website using any of these three methods:
+
+1. **Method 1 — Direct Wallet (MetaMask — Fastest Payouts):**
+   Paste this single line inside the `<head>` of your website:
+   ```html
+   <meta name="paidattention" content="wallet:0xYourWalletAddress" />
+   ```
+   *Payments arrive directly in your wallet with $0 transaction fees and zero waiting.*
+
+2. **Method 2 — 60-Second Domain Tag (No Wallet Needed Upfront):**
+   Don't have a wallet yet? Just put your website domain:
+   ```html
+   <meta name="paidattention" content="domain:yourwebsite.com" />
+   ```
+   *Earnings are held safely for your domain automatically. You can verify ownership and redeem them anytime later via a 1-click FaceID/TouchID Passkey or bank transfer.*
+
+3. **Method 3 — 1-Click WordPress Plugin (Zero Code):**
+   Upload [`integrations/paidattention-wordpress/paidattention-wordpress.php`](integrations/paidattention-wordpress/paidattention-wordpress.php) to your WordPress plugins folder and configure it under **Settings → PaidAttention**.
+
+---
+
+## 🔍 How Each Feature Works in Detail
+
+Below is a closer look at how each protection and feature works behind the scenes. *(For the complete mathematical formulas and smart-contract specifications, see [SPECIFICATION.md](SPECIFICATION.md)).*
+
+<details>
+<summary><strong>1. 🛡️ How the 15-Second Countdown & Anti-Clickbait Curve Work</strong></summary>
+<br/>
+
+Traditional paywalls force you to pay before you know if an article is worth reading, while linear streaming meters charge you from the very first second.
+- **Free Grace Window:** PaidAttention waits 10–15 seconds before starting the meter. If you bounce early, nothing is charged.
+- **Smooth Ramp & Hard Cap:** After the countdown, the payment ramps up smoothly while the tab is actively focused and stops permanently once the item's cap is reached. If you switch to another tab or minimize the window, the meter pauses immediately.
+- **48-Hour Re-Read Window:** Once you reach the cap on an article or video, it stays unlocked for 24–48 hours at no extra cost (with anti-piracy limits so a single account cannot illegally re-stream video to thousands of people).
+</details>
+
+<details>
+<summary><strong>2. 👍 How the "Boost" (Thumbs Up) Quality Pool Works at $0 Extra Cost</strong></summary>
+<br/>
+
+On most platforms, tipping a creator costs you extra money out of pocket—and allowing a "Thumbs Down" to pay less would encourage people to downvote everything just to save pennies.
+- **Budget-Neutral Rebalancing:** With PaidAttention, there is only a **👍 Boost** button. Whether you click 👍 zero times or ten times in a day, **your total daily spending stays the exact same**.
+- **Rewarding Quality:** When you give a 👍 to 2 out of 10 pages you viewed, a portion of your daily spend is automatically pooled and routed to those 2 pages—boosting their creators by up to **2x (+100%)**, while pages that received no 👍 still receive at least **50%** of their base rate.
+</details>
+
+<details>
+<summary><strong>3. 🌍 Community Buyout Goals & Fair Pricing Alerts</strong></summary>
+<br/>
+
+- **Community Buyout Goal:** Creators can set a total earnings target for a piece of work (for example, $500 for an investigative article or $50,000 for an indie documentary) and write a short note explaining why. As more people view the work, its per-viewer price gradually drops until—once the goal is reached—it falls to a near-free maintenance floor for everyone else.
+- **Price Gouging Protection:** The app compares every page's rate against the normal average for that category (articles, music, video, courses) and against real-world inflation. If a page tries to charge an unusually high rate, the meter pauses after the free preview and asks for your permission before spending a cent.
+- **Monthly Affordability Thermostat:** If average digital media spending across the network ever creeps above ~$90–$100/month (adjusted for inflation and median salaries), the protocol automatically scales prices downward so digital content never eats an unfair share of human income.
+</details>
+
+<details>
+<summary><strong>4. 🔒 Wallet Security, $0 Transaction Fees & 60-Day Automatic Refunds</strong></summary>
+<br/>
+
+- **Independent Non-Amendable Wallet (`ImmutableUserVault.sol`):** Your funds are held in a standalone smart contract outside of governance control—no admin or developer can ever drain, freeze, or change the rules on existing funds.
+- **$200 Maximum Balance Ceiling:** To minimize risk, a user wallet cannot hold more than $200 at once (any excess deposit is automatically returned in the same transaction).
+- **1-Click Instant Refund & 60-Day Inactivity Refund:** You can withdraw 100% of your remaining balance in one click at any time. If your account is inactive for 60 days, the smart contract automatically refunds your remaining balance back to the exact wallet(s) that funded it in First-In-First-Out order.
+- **$0 Transaction Fees:** Micro-payments are batched off-chain and settled on Ethereum Layer-2 (Base / Arbitrum). The tiny blockchain gas fees are paid entirely by the interest generated on idle balances, so users and creators pay **$0.00 in gas fees**.
+</details>
+
+<details>
+<summary><strong>5. 🕵️ Privacy, Cultural Rankings & Community Grants</strong></summary>
+<br/>
+
+- **Complete Financial Privacy:** Your browsing sessions use blinded cryptographic proofs so no public observer can ever link your personal wallet to the articles or videos you viewed. Creators can also use stealth addresses so their total income stays private.
+- **Global & Regional Quality Rankings:** Using anonymous regional tags, PaidAttention highlights the highest-quality content (most focused time + highest 👍 ratio) by language, region, and culture—showing what humanity genuinely values spending time on rather than what had the most clickbait views.
+- **Optional 1% Open-Source Tip & Community Grants:** Users can optionally enable a Wikipedia-style **+1% tip** (which automatically expires after 1 week, 1 month, or 1 year) to fund open-source maintenance and local creator grants voted on by long-term community members.
+- **3D Worlds & Metaverse Ready:** Includes a spatial trigger API (`SpatialTrigger`) so 3D virtual museums and worlds (such as Decentraland) can start and pause the meter automatically as your avatar walks into and out of a virtual building.
+</details>
+
+---
+
+## 📂 Repository Contents
+
+* [`extension/`](extension/) — Ready-to-load Chrome / Brave / Edge Extension (Manifest V3) with custom icons
+* [`index.html`](index.html), [`app.js`](app.js), [`styles.css`](styles.css) — Interactive Web App & Creator Monetization Studio
+* [`integrations/paidattention-wordpress/`](integrations/paidattention-wordpress/paidattention-wordpress.php) — 1-Click WordPress Plugin
+* [`contracts/ImmutableUserVault.sol`](contracts/ImmutableUserVault.sol) & [`contracts/OpenStreamProtocol.sol`](contracts/OpenStreamProtocol.sol) — Ethereum L2 Smart Contracts
+* [`contracts/DEPLOY_REMIX_GUIDE.md`](contracts/DEPLOY_REMIX_GUIDE.md) — 2-Minute Browser Guide to deploying on Base Sepolia Testnet
+* [`SPECIFICATION.md`](SPECIFICATION.md) — Full Technical & Mathematical Whitepaper
 
 ---
 
 ## 📄 License
 
-Dual-licensed under **[GNU AGPLv3 (Core Protocol, Contracts & Browser Extension) + MIT License (`sdk/` & `examples/`)](LICENSE)**:
+Dual-licensed under **[GNU AGPLv3 (Core Protocol, Contracts & Browser Extension) + MIT License (`sdk/`, `examples/` & `integrations/`)](LICENSE)**:
 - **Core Platform (`AGPL-3.0-or-later`):** Ensures the protocol, browser extension, and AI attribution algorithms remain permanently open-source and prevents closed-source commercial clones.
-- **Website Embed SDK (`MIT`):** Allows any personal website, blog, newspaper, or streaming service to embed `<meta name="paidattention">` tags and `sdk/openstream-sdk.js` with zero legal friction.
+- **Website Embed SDK & Plugins (`MIT`):** Allows any personal website, blog, WordPress site, newspaper, or streaming service to embed `<meta name="paidattention">` tags with zero legal friction.
