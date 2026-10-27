@@ -1,30 +1,35 @@
 /**
- * OpenStream v2.0 — Ultra-Clean Minimalist Overlay Pill
- * - No URL displayed
- * - Simple 15s -> 0s countdown before meter starts
- * - Live $0.0001 / $0.015 counter next to icon-only 👍 button
+ * PaidAttention v2.1 — Security-Hardened Minimalist Overlay Pill
+ * Patched against:
+ *  - EXT-01: Blocks execution inside iframes (`window !== window.top`)
+ *  - EXT-02: Blocks synthetic/programmatic JS clicks (`!event.isTrusted`)
+ *  - EXT-03: Reads <meta> tags strictly from `document.head` at initial load (blocks body XSS injection)
  */
 
 (function () {
+  // EXT-01 Fix: Never run inside iframes or sub-frames
+  if (window !== window.top) return;
   if (window.__openStreamContentScriptLoaded) return;
   window.__openStreamContentScriptLoaded = true;
 
   const domain = window.location.hostname || 'local-page.org';
-  const osMeta = document.querySelector('meta[name="paidattention"], meta[name="openstream"]');
+  // EXT-03 Fix: Only query document.head so body comment XSS cannot inject fake wallet <meta> tags
+  const headEl = document.head || document.documentElement;
+  const osMeta = headEl.querySelector('meta[name="paidattention"], meta[name="openstream"]');
   const osGate = document.querySelector('paidattention-gate, openstream-gate');
 
-  let tGrace = 15; // 15-second countdown before meter starts
+  let tGrace = 15; // 15-second countdown before meter starts (min 5s enforced)
   let tCap = 120;  // Hard session cap
-  let pCap = 0.015; // $0.015 session cap
+  let pCap = 0.015; // Max $0.015 session cap
 
   if (osGate) {
-    tGrace = parseFloat(osGate.getAttribute('t-grace') || '15');
-    tCap = parseFloat(osGate.getAttribute('t-cap') || '90');
-    pCap = parseFloat(osGate.getAttribute('p-init') || '0.015');
+    tGrace = Math.max(5, parseFloat(osGate.getAttribute('t-grace') || '15'));
+    tCap = Math.max(tGrace + 15, parseFloat(osGate.getAttribute('t-cap') || '90'));
+    pCap = Math.min(0.50, Math.max(0.001, parseFloat(osGate.getAttribute('p-init') || '0.015')));
   } else if (osMeta) {
-    tGrace = parseFloat(osMeta.getAttribute('data-t-grace') || '15');
-    tCap = parseFloat(osMeta.getAttribute('data-t-cap') || '120');
-    pCap = parseFloat(osMeta.getAttribute('data-p-cap') || '0.015');
+    tGrace = Math.max(5, parseFloat(osMeta.getAttribute('data-t-grace') || '15'));
+    tCap = Math.max(tGrace + 15, parseFloat(osMeta.getAttribute('data-t-cap') || '120'));
+    pCap = Math.min(0.50, Math.max(0.001, parseFloat(osMeta.getAttribute('data-p-cap') || '0.015')));
   }
 
   let focusedSec = 0;
@@ -46,11 +51,11 @@
     return Math.max(0.0001, pCap * ((sT - sG) / (sC - sG)));
   }
 
-  // Create sleek, compact Shadow DOM pill in bottom-right corner
+  // Create closed Shadow DOM pill so page scripts cannot inspect or manipulate internal buttons
   const host = document.createElement('div');
   host.id = 'openstream-ambient-pill-host';
   host.style.cssText = 'position:fixed;bottom:16px;right:16px;z-index:2147483646;';
-  const shadow = host.attachShadow({ mode: 'open' });
+  const shadow = host.attachShadow({ mode: 'closed' });
 
   shadow.innerHTML = `
     <style>
@@ -109,7 +114,6 @@
   const thumbBtn = shadow.getElementById('osThumbBtn');
   const hideBtn = shadow.getElementById('osHideBtn');
 
-  // Sync initial state from background
   if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
     chrome.runtime.sendMessage({ type: 'GET_STATE' }, (res) => {
       if (res && res.state && res.state.domainsVisited && res.state.domainsVisited[domain]) {
@@ -120,15 +124,18 @@
     });
   }
 
-  hideBtn.addEventListener('click', () => {
+  hideBtn.addEventListener('click', (e) => {
+    if (!e || !e.isTrusted) return;
     host.style.display = 'none';
   });
 
-  thumbBtn.addEventListener('click', () => {
+  // EXT-02 Fix: Reject synthetic untrusted clicks (`!e.isTrusted`)
+  thumbBtn.addEventListener('click', (e) => {
+    if (!e || !e.isTrusted) return;
     thumbedUp = !thumbedUp;
     thumbBtn.classList.toggle('active', thumbedUp);
     if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
-      chrome.runtime.sendMessage({ type: 'TOGGLE_THUMBS_UP', domain });
+      chrome.runtime.sendMessage({ type: 'TOGGLE_THUMBS_UP', domain, isTrustedUserClick: true });
     }
   });
 

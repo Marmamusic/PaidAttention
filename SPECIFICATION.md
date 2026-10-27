@@ -29,7 +29,7 @@ Modern digital media, software, and AI consumption is broken by two extremes:
 10. **Promotional \$2.00 Virtual Trial Meter (Auto-Sunsetting at 1M Users):** New users during the bootstrap phase (< 1,000,000 organic users) receive \$2.00 in non-withdrawable, expiring virtual trial credits (paying \$0 to creators, eliminating Sybil faucet farming). Upon exhaustion, a **Subscription Comparison Receipt Popup** proves how much they save vs. legacy monthly subscriptions.
 11. **Non-Amendable External Custody Vault (`ImmutableUserVault.sol`) & 60-Day FIFO Auto-Refund:** User funds sit in an immutable smart contract outside governance control, enforcing a hard **\$100–\$200 max balance ceiling** (auto-bouncing excess deposits), a **1-Tap Instant Exit**, and a **60-Day Inactivity FIFO Proportional Refund** that returns unspent funds strictly to the original funding wallets in First-In-First-Out order (defeating \$1 dust-hijack attacks).
 12. **Dual-Sided Financial Privacy & Regional Human Value Index (HVI):** Blinded ZK-vouchers unlink user wallets from consumed content, and ERC-5564 Stealth Addresses protect creator identities/earnings—while encrypted regional telemetry powers a public **Human Value Index** ranking the highest-quality content by region, language, and culture.
-13. **OpenStream Commons DAO & 1/3 Founder-Arbitrated On-Chain Code Registry:** Excess DeFi yield (above L2 gas) and excess 1% expiring dev surcharges fund localized creator grants voted on by 1-year+ organic users via encrypted Locale proofs. Official code updates are pushed via an on-chain registry governed by a token where the founder permanently retains a **1/3 (33.33%) anti-dilution arbitration share**.
+13. **OpenStream Commons DAO & 1/3 Founder-Arbitrated On-Chain Code Registry:** Excess DeFi yield (above L2 gas) funds localized creator grants voted on by 1-year+ organic users via encrypted Locale proofs. The protocol charges **0% developer fees** (100% of user spend goes to creators, with optional direct peer-to-peer donations via QR code on GitHub). Official code updates are pushed via an on-chain registry governed by a token where the founder permanently retains a **1/3 (33.33%) anti-dilution arbitration share**.
 14. **Electric Utility Meter HUD, Private 2D Timeline History & 3D/Metaverse Trigger API:** An animated mechanical-style spend odometer, a 100% on-device encrypted browsing history (list view + interactive 2D price-vs-time curve), and a spatial event API (`onEnterZone`/`onExitZone`) for 3D metaverses like Decentraland.
 
 ---
@@ -177,14 +177,14 @@ flowchart TB
     subgraph ProtocolEngine["4. Upgradeable Protocol & OpenStream Commons DAO"]
         Engine["OpenStreamEngine.sol\n(Platform Splits, AI Royalties, Macro Thermostat)"]
         CodeReg["On-Chain Code Registry\n(1/3 Founder Arbitration Token + Signed Updates)"]
-        CommonsDAO["OpenStream Commons DAO\n(Encrypted-Locale Grants from Excess Yield & 1% Fee)"]
+        CommonsDAO["OpenStream Commons DAO\n(Encrypted-Locale Grants from Excess DeFi Yield)"]
     end
 
     ClientApp -->|Signed Blinded Vouchers + 👍 Flags| PrivacyLayer
     Vault <-->|Strict Voucher Debit Only| Engine
     PrivacyLayer -->|Pooled Batch Settlement| Engine
     Engine -->|Splits to Platform, Co-Creators & AI Sources| Stealth
-    Engine -->|Excess Yield & 1% Dev Surcharge| CommonsDAO
+    Engine -->|Excess DeFi Yield Only (0% Dev Fee)| CommonsDAO
     CodeReg -->|Verified Push-Upgrades| ClientApp
 ```
 
@@ -245,11 +245,11 @@ To eliminate crypto-onboarding friction for new users visiting small creators du
 ### 3.5 OpenStream Commons DAO (Encrypted-Locale Grants) & 1/3 Founder-Arbitrated On-Chain Code Registry
 
 1. **OpenStream Commons DAO (Localized Creator & Cultural Grants):**
-   - **Funding Source:** Any DeFi pool yield remaining after paying 100% of L2 batch gas fees, plus any surplus from the voluntary **1% expiring developer surcharge** (above core maintainer remuneration), flows into the **OpenStream Commons Grant Pool**.
+   - **Funding Source:** Any DeFi pool yield remaining after paying 100% of L2 batch gas fees flows into the **OpenStream Commons Grant Pool**. There is **zero in-protocol developer fee or pooled surcharge** (eliminating any fee-pool attack vector); users who wish to support the creator can donate directly via the personal QR code on GitHub.
    - **Encrypted Locale & Anti-Sybil Voting Eligibility:** Users optionally configure their Locale (from Country/Language down to Town), stored as an encrypted zero-knowledge commitment. To prevent Sybil attacks in small towns, a wallet can vote on local creator/event grant proposals **only if** it proves $\ge 365\text{ days}$ of account age and normal organic content consumption entropy.
 2. **On-Chain Code Registry & 1/3 Founder Arbitration Token:**
-   - **Defeating Malicious Forks:** Rather than relying solely on GitHub (where scammers could fork the repo, swap the `devTreasury` wallet, or hike the 1% fee), official releases and signed push-updates are anchored in an **On-Chain Code Registry** verified by all client installations.
-   - **Governance Token & 33.33% Founder Arbitrage Share:** Governance tokens are distributed via a transparent, merit-based airdrop schedule to active contributors (entitling them to a share of the 1% dev fund and code-upgrade votes). Every airdrop mint automatically issues a matching **1/3 (33.33%) share to the Founder**, ensuring progressive decentralization while preserving founder arbitration power during community deadlocks.
+   - **Defeating Malicious Forks:** Rather than relying solely on GitHub (where scammers could fork the repo and inject hidden fees), official releases and signed push-updates are anchored in an **On-Chain Code Registry** verified by all client installations.
+   - **Governance Token & 33.33% Founder Arbitrage Share:** Governance tokens are distributed via a transparent, merit-based airdrop schedule to active contributors for code-upgrade votes. Every airdrop mint automatically issues a matching **1/3 (33.33%) share to the Founder**, ensuring progressive decentralization while preserving founder arbitration power during community deadlocks.
 
 ---
 

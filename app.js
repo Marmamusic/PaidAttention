@@ -1072,7 +1072,7 @@ document.getElementById('convertTrialTopUpBtn').addEventListener('click', () => 
   document.getElementById('topUpBtn').click();
 });
 
-// ZK Pooled Batch Settlement
+// ZK Pooled Batch Settlement (Zero Developer Fee Cut — 100% to Creators/Platforms)
 document.getElementById('settleBatchBtn').addEventListener('click', () => {
   const item = getSelectedContent();
   const tStats = computeThumbsUpPoolStats();
@@ -1082,18 +1082,12 @@ document.getElementById('settleBatchBtn').addEventListener('click', () => {
   const totalPayout = myContribution + coSignSum;
   const l2GasFee = 0.00042;
 
-  const devPledgeActive = state.devPledgeDuration && state.devPledgeDuration !== 'off';
-  const devSurcharge = devPledgeActive ? totalPayout * 0.01 : 0;
-  state.devTreasuryUSD += devSurcharge;
-  state.taoGrantPoolUSD += devSurcharge * 0.5;
-  document.getElementById('devTreasuryDisplay').textContent = `$${state.devTreasuryUSD.toFixed(6)}`;
-
   state.yieldReserveUSD = Math.max(0, state.yieldReserveUSD - l2GasFee);
   item.totalRevenue += totalPayout;
 
   logSettlementTx(
     `✅ ZK-Blinded Batch Settled → ${item.platformSplitText}`,
-    `Total: $${totalPayout.toFixed(4)} (${mult.toFixed(2)}x 👍 Pool) | Stealth Payout + 0 Gas!`
+    `Total: $${totalPayout.toFixed(4)} (${mult.toFixed(2)}x 👍 Pool) | 100% to Creator + 0 Gas!`
   );
 
   state.sessionNonce += 1;
@@ -1215,25 +1209,6 @@ document.getElementById('simulateAirdropBtn').addEventListener('click', () => {
   state.daoGovTokens += 100000;
   state.founderGovTokens += 50000; // 50k / 150k = 33.33% (1/3)
   renderDaoAndVaultTab();
-});
-
-// 1% Dev Pledge Pills
-document.querySelectorAll('#pledgeDurationGroup .pledge-pill').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('#pledgeDurationGroup .pledge-pill').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const dur = btn.getAttribute('data-duration');
-    state.devPledgeDuration = dur;
-    const labels = {
-      'off': { text: 'OFF (0% Surcharge)', cls: 'text-amber' },
-      '1w':  { text: 'ACTIVE (+1% • Expires in 7d)', cls: 'text-emerald' },
-      '1m':  { text: 'ACTIVE (+1% • Expires in 30d)', cls: 'text-emerald' },
-      '1y':  { text: 'ACTIVE (+1% • Expires in 365d)', cls: 'text-emerald' }
-    };
-    const statusLabel = document.getElementById('pledgeStatusLabel');
-    statusLabel.textContent = labels[dur].text;
-    statusLabel.className = labels[dur].cls;
-  });
 });
 
 // Region Filter Tabs in Cultural Rankings

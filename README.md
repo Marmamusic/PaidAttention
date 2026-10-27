@@ -111,7 +111,7 @@ On most platforms, tipping a creator costs you extra money out of pocket—and a
 
 - **Complete Financial Privacy:** Your browsing sessions use blinded cryptographic proofs so no public observer can ever link your personal wallet to the articles or videos you viewed. Creators can also use stealth addresses so their total income stays private.
 - **Global & Regional Quality Rankings:** Using anonymous regional tags, PaidAttention highlights the highest-quality content (most focused time + highest 👍 ratio) by language, region, and culture—showing what humanity genuinely values spending time on rather than what had the most clickbait views.
-- **Optional 1% Open-Source Tip & Community Grants:** Users can optionally enable a Wikipedia-style **+1% tip** (which automatically expires after 1 week, 1 month, or 1 year) to fund open-source maintenance and local creator grants voted on by long-term community members.
+- **Zero Protocol Fee Cut (100% to Creators):** PaidAttention takes **0% in developer commissions or pooled fee cuts** from user payments, eliminating any risk of fee-pool abuse. 100% of every micropayment goes directly to the content creators and platforms.
 - **3D Worlds & Metaverse Ready:** Includes a spatial trigger API (`SpatialTrigger`) so 3D virtual museums and worlds (such as Decentraland) can start and pause the meter automatically as your avatar walks into and out of a virtual building.
 </details>
 
@@ -119,12 +119,24 @@ On most platforms, tipping a creator costs you extra money out of pocket—and a
 
 ## 📂 Repository Contents
 
-* [`extension/`](extension/) — Ready-to-load Chrome / Brave / Edge Extension (Manifest V3) with custom icons
+* [`extension/`](extension/) — Security-hardened Chrome / Brave / Edge Extension (Manifest V3) with custom icons
 * [`index.html`](index.html), [`app.js`](app.js), [`styles.css`](styles.css) — Interactive Web App & Creator Monetization Studio
 * [`integrations/paidattention-wordpress/`](integrations/paidattention-wordpress/paidattention-wordpress.php) — 1-Click WordPress Plugin
-* [`contracts/ImmutableUserVault.sol`](contracts/ImmutableUserVault.sol) & [`contracts/OpenStreamProtocol.sol`](contracts/OpenStreamProtocol.sol) — Ethereum L2 Smart Contracts
+* [`contracts/ImmutableUserVault.sol`](contracts/ImmutableUserVault.sol) & [`contracts/OpenStreamProtocol.sol`](contracts/OpenStreamProtocol.sol) — Hardened Ethereum L2 Smart Contracts
+* [`SECURITY.md`](SECURITY.md) & [`test/security-pentest.js`](test/security-pentest.js) — Penetration Testing Protocol & Automated Exploit-Defense Test Suite
 * [`contracts/DEPLOY_REMIX_GUIDE.md`](contracts/DEPLOY_REMIX_GUIDE.md) — 2-Minute Browser Guide to deploying on Base Sepolia Testnet
 * [`SPECIFICATION.md`](SPECIFICATION.md) — Full Technical & Mathematical Whitepaper
+
+---
+
+## 💚 Support the Creator (Direct Donations)
+
+**PaidAttention** is 100% free and takes **0% protocol fees** on your payments. If you find this project useful and would like to support its creator directly, you can scan the donation QR code below:
+
+<!-- Place your personal donation QR code image at assets/donation-qr.png -->
+<p align="center">
+  <img src="assets/donation-qr.png" alt="Donate to PaidAttention Creator" width="200" />
+</p>
 
 ---
 
